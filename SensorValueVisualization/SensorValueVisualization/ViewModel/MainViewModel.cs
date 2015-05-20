@@ -28,6 +28,7 @@ namespace SensorValueVisualization.ViewModel
         private readonly BackgroundWorker _chatServerWorker;
         public MainViewModel()
         {
+            IsConnected = false;
             _chatServerWorker = new BackgroundWorker
             {
                 WorkerReportsProgress = true,
@@ -138,8 +139,21 @@ namespace SensorValueVisualization.ViewModel
             get { return _isConnected; }
             set
             {
+                IsDisconnected = !value;
                 _isConnected = value;
                 RaisePropertyChanged(() => IsConnected);
+            }
+        }
+
+        private bool _isDisconnected;
+
+        public bool IsDisconnected
+        {
+            get { return _isDisconnected; }
+            set
+            {
+                _isDisconnected = value;
+                RaisePropertyChanged(() => IsDisconnected);
             }
         }
     }
