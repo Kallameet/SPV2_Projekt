@@ -27,3 +27,5 @@ C:\Users\Bernhard\Documents\GitHub\SPV2_Projekt\SensorValueVisualization\SensorV
 C:\Users\Bernhard\Documents\GitHub\SPV2_Projekt\SensorValueVisualization\SensorValueVisualization\obj\Debug\SensorValueVisualization.csproj.GenerateResource.Cache
 C:\Users\Bernhard\Documents\GitHub\SPV2_Projekt\SensorValueVisualization\SensorValueVisualization\obj\Debug\SensorValueVisualization.exe
 C:\Users\Bernhard\Documents\GitHub\SPV2_Projekt\SensorValueVisualization\SensorValueVisualization\obj\Debug\SensorValueVisualization.pdb
+C:\Users\Bernhard\Documents\GitHub\SPV2_Projekt\SensorValueVisualization\SensorValueVisualization\bin\Debug\SensorValues.dll
+C:\Users\Bernhard\Documents\GitHub\SPV2_Projekt\SensorValueVisualization\SensorValueVisualization\bin\Debug\SensorValues.pdb
