@@ -18,15 +18,30 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Server Ip:"
-            android:id="@+id/lblFibonacci" />
+            android:id="@+id/lblServerIp" />
 
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="phone"
             android:ems="10"
-            android:id="@+id/tbFibonacci"
-            android:text="10.0.0.2"/>
+            android:id="@+id/tbServerIp"
+            android:text="10.0.3.2"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Server Port:"
+            android:id="@+id/lblServerPort" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="phone"
+            android:ems="10"
+            android:id="@+id/tbServerPort"
+            android:text="1234"/>
 
         <Space
             android:layout_width="match_parent"
@@ -38,7 +53,14 @@
             android:layout_height="wrap_content"
             android:text="Connect"
             android:id="@+id/btnConnect"
-            android:onClick=""/>
+            android:onClick="OnClickConnect"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Disconnect"
+            android:id="@+id/btnDisconnect"
+            android:onClick="OnClickDisconnect"/>
 
         <Space
             android:layout_width="match_parent"

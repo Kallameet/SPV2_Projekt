@@ -22,29 +22,13 @@ namespace SensorValueVisualization.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
-        private const string IpAdress = "127.0.0.1";
-        private const int Port = 1234;
-        private readonly ChatServer _chatServer;
-        private readonly BackgroundWorker _chatServerWorker;
+        private ChatServer _chatServer;
+        private BackgroundWorker _chatServerWorker;
         public MainViewModel()
         {
+            IpAdress = "127.0.0.1";
+            Port = 1234;
             IsConnected = false;
-            _chatServerWorker = new BackgroundWorker
-            {
-                WorkerReportsProgress = true,
-                WorkerSupportsCancellation = true
-            };
-            _chatServer = new ChatServer(IpAdress, Port, _chatServerWorker);
-            try
-            {
-                _chatServerWorker.DoWork += RunChatServer;
-                _chatServerWorker.ProgressChanged += ReadSensorValues;
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine("Unexpected Exception occured.");
-                Debug.WriteLine(e.ToString());
-            }
         }
 
         ~MainViewModel()
@@ -53,6 +37,30 @@ namespace SensorValueVisualization.ViewModel
             IsConnected = false;
         }
 
+        private string _ipAdress;
+
+        public string IpAdress
+        {
+            get { return _ipAdress; }
+            set
+            {
+                _ipAdress = value;
+                RaisePropertyChanged(() => IpAdress);
+            }
+        }
+
+        private int _port;
+
+        public int Port
+        {
+            get { return _port; }
+            set
+            {
+                _port = value;
+                RaisePropertyChanged(() => Port);
+            }
+        }
+        
         private void RunChatServer(object sender, DoWorkEventArgs e)
         {
             _chatServer.Start();
@@ -112,6 +120,23 @@ namespace SensorValueVisualization.ViewModel
 
         private void OnClickStart()
         {
+            _chatServerWorker = new BackgroundWorker
+            {
+                WorkerReportsProgress = true,
+                WorkerSupportsCancellation = true
+            };
+            _chatServer = new ChatServer(IpAdress, Port, _chatServerWorker);
+            try
+            {
+                _chatServerWorker.DoWork += RunChatServer;
+                _chatServerWorker.ProgressChanged += ReadSensorValues;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Unexpected Exception occured.");
+                Debug.WriteLine(e.ToString());
+            }
+
             if (!_chatServerWorker.IsBusy)
             {
                 _chatServerWorker.RunWorkerAsync();

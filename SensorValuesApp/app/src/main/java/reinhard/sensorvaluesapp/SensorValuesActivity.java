@@ -6,9 +6,14 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 
@@ -21,6 +26,11 @@ public class SensorValuesActivity extends Activity implements SensorEventListene
     private float last_x, last_y, last_z;
     private static final int SHAKE_THRESHOLD = 600;
 
+    private Button connectButton;
+    private Button disconnectButton;
+
+    TcpClient tcpClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +39,11 @@ public class SensorValuesActivity extends Activity implements SensorEventListene
         senSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         senAccelerometer = senSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         senSensorManager.registerListener(this, senAccelerometer , SensorManager.SENSOR_DELAY_NORMAL);
+
+        connectButton = (Button) findViewById(R.id.btnConnect);
+        //connectButton.setEnabled(true);
+        disconnectButton = (Button) findViewById(R.id.btnDisconnect);
+        //disconnectButton.setEnabled(false);
     }
 
     protected void onPause() {
@@ -65,10 +80,10 @@ public class SensorValuesActivity extends Activity implements SensorEventListene
         Sensor mySensor = event.sensor;
 
         if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            float x = event.values[0];
-            float y = event.values[1];
-            float z = event.values[2];
-
+            SensorValues sensorValues = new SensorValues();
+            sensorValues.setAccelerometerX(event.values[0]);
+            sensorValues.setAccelerometerY(event.values[1]);
+            sensorValues.setAccelerometerZ(event.values[2]);
 
             long curTime = System.currentTimeMillis();
 
@@ -77,7 +92,12 @@ public class SensorValuesActivity extends Activity implements SensorEventListene
                 lastUpdate = curTime;
 
                 TextView textView = (TextView) findViewById(R.id.lblAccelerometerValues);
-                textView.setText(String.format("X: %s, Y: %s, Z: %s", x, y, z));
+                textView.setText(String.format("X: %s, Y: %s, Z: %s", sensorValues.getAccelerometerX(), sensorValues.getAccelerometerY(), sensorValues.getAccelerometerZ()));
+
+                // check if client is connected
+                if (tcpClient != null) {
+                    tcpClient.sendMessage(sensorValues);
+                }
             }
         }
     }
@@ -85,5 +105,33 @@ public class SensorValuesActivity extends Activity implements SensorEventListene
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
+    }
+
+    public void OnClickConnect(View view) {
+        new ConnectTask().execute("");
+
+        // TODO: check if connected
+
+        disconnectButton.setEnabled(true);
+        connectButton.setEnabled(false);
+    }
+
+    public void OnClickDisconnect(View view) {
+        tcpClient.stop();
+        connectButton.setEnabled(true);
+        disconnectButton.setEnabled(false);
+    }
+
+    public class ConnectTask extends AsyncTask<String, String, TcpClient> {
+
+        @Override
+        protected TcpClient doInBackground(String... message) {
+            EditText serverIp = (EditText) findViewById(R.id.tbServerIp);
+            EditText serverPort = (EditText) findViewById(R.id.tbServerPort);
+            tcpClient = new TcpClient(serverIp.getText().toString(), Integer.parseInt(serverPort.getText().toString()));
+            tcpClient.run();
+
+            return null;
+        }
     }
 }

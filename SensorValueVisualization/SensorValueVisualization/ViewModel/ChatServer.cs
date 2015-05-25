@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -60,11 +61,12 @@ namespace SensorValueVisualization.ViewModel
                 try
                 {
                     ThreadPool.QueueUserWorkItem(ReadClientMessages, null);
+                    Debug.WriteLine("Client has connected properly.");
                 }
                 catch (InvalidCastException e)
                 {
-                    Console.WriteLine("Client has not connected properly.");
-                    Console.WriteLine(e.ToString());
+                    Debug.WriteLine("Client has not connected properly.");
+                    Debug.WriteLine(e.ToString());
                     _connectedClient.Close();
                 }
             }
@@ -107,7 +109,7 @@ namespace SensorValueVisualization.ViewModel
                                 using (Stream xmlStream = GenerateStreamFromString(receivedXml.ToString()))
                                 {
                                     SensorValues sensorValues = (SensorValues)_formatter.Deserialize(xmlStream);
-                                    //Console.WriteLine(sensorValues);
+                                    Debug.WriteLine(sensorValues);
                                     _backgroundWorker.ReportProgress(0, sensorValues);
                                 }
                             }
@@ -122,8 +124,8 @@ namespace SensorValueVisualization.ViewModel
                         }
                         catch (InvalidCastException e)
                         {
-                            Console.WriteLine("Could not cast received message.");
-                            Console.WriteLine(e.ToString());
+                            Debug.WriteLine("Could not cast received message.");
+                            Debug.WriteLine(e.ToString());
                         }
                         finally
                         {
