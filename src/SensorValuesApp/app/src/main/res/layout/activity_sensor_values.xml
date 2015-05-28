@@ -42,7 +42,22 @@
             android:ems="10"
             android:id="@+id/tbServerPort"
             android:text="1234"/>
-
+			
+		<TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Frequency:"
+            android:id="@+id/lblFrequency" />
+			
+		<EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="phone"
+            android:ems="10"
+            android:id="@+id/tbFrequency"
+            android:text="500"/>
+			
         <Space
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -53,14 +68,16 @@
             android:layout_height="wrap_content"
             android:text="Connect"
             android:id="@+id/btnConnect"
-            android:onClick="OnClickConnect"/>
+            android:onClick="OnClickConnect"
+            android:enabled="true" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Disconnect"
             android:id="@+id/btnDisconnect"
-            android:onClick="OnClickDisconnect"/>
+            android:onClick="OnClickDisconnect"
+            android:enabled="false" />
 
         <Space
             android:layout_width="match_parent"

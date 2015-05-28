@@ -23,8 +23,6 @@ public class SensorValuesActivity extends Activity implements SensorEventListene
     private Sensor senAccelerometer;
 
     private long lastUpdate = 0;
-    private float last_x, last_y, last_z;
-    private static final int SHAKE_THRESHOLD = 600;
 
     private Button connectButton;
     private Button disconnectButton;
@@ -41,9 +39,7 @@ public class SensorValuesActivity extends Activity implements SensorEventListene
         senSensorManager.registerListener(this, senAccelerometer , SensorManager.SENSOR_DELAY_NORMAL);
 
         connectButton = (Button) findViewById(R.id.btnConnect);
-        //connectButton.setEnabled(true);
         disconnectButton = (Button) findViewById(R.id.btnDisconnect);
-        //disconnectButton.setEnabled(false);
     }
 
     protected void onPause() {
@@ -58,16 +54,12 @@ public class SensorValuesActivity extends Activity implements SensorEventListene
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.sensor_values, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             return true;
@@ -87,7 +79,10 @@ public class SensorValuesActivity extends Activity implements SensorEventListene
 
             long curTime = System.currentTimeMillis();
 
-            if ((curTime - lastUpdate) > 100) {
+            EditText editText = (EditText) findViewById(R.id.tbFrequency);
+            int frequency = Integer.parseInt(editText.getText().toString());
+
+            if ((curTime - lastUpdate) > frequency) {
                 long diffTime = (curTime - lastUpdate);
                 lastUpdate = curTime;
 
@@ -109,8 +104,6 @@ public class SensorValuesActivity extends Activity implements SensorEventListene
 
     public void OnClickConnect(View view) {
         new ConnectTask().execute("");
-
-        // TODO: check if connected
 
         disconnectButton.setEnabled(true);
         connectButton.setEnabled(false);

@@ -45,9 +45,9 @@ public class TcpClient {
      // Sends the message entered by client to the server
     public void sendMessage(SensorValues sensorValues) {
         if (mBufferOut != null && !mBufferOut.checkError() && sensorValues != null) {
-            Serializer serializer = new Persister();
             try {
-                serializer.write(sensorValues, mBufferOut);
+                XmlCreator creator = new XmlCreator();
+                mBufferOut.write(creator.CreateXmlFromSensorValues(sensorValues));
             }
             catch (Exception e) {
                 Log.e("Serialization", "S: Error", e);
@@ -60,9 +60,6 @@ public class TcpClient {
      */
     public void stop() {
         Log.i("Debug", "stop");
-
-        // send mesage that we are closing the connection
-        //sendMessage(Constants.CLOSED_CONNECTION + "Kazy");
 
         mRun = false;
 

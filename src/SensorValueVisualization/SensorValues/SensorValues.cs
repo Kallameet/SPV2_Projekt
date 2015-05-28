@@ -1,15 +1,15 @@
 ﻿using System;
 
-namespace SensorValuesServer
+namespace SensorValues
 {
     [Serializable]
     public class SensorValues
     {
-        public int AccelerometerX { get; set; }
+        public double AccelerometerX { get; set; }
 
-        public int AccelerometerY { get; set; }
+        public double AccelerometerY { get; set; }
 
-        public int AccelerometerZ { get; set; }
+        public double AccelerometerZ { get; set; }
 
         public override string ToString()
         {

@@ -8,16 +8,15 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
 using System.Xml.Serialization;
-using SensorValuesServer;
 
 namespace SensorValueVisualization.ViewModel
 {
-    public class ChatServer
+    public class SensorValuesServer
     {
         public string IpAdress { get; private set; }
         public int Port { get; private set; }
 
-        private const int ReadIntervallInMilliseconds = 500;
+        private const int ReadIntervallInMilliseconds = 300;
 
         private TcpClient _connectedClient;
 
@@ -25,12 +24,13 @@ namespace SensorValueVisualization.ViewModel
         //private readonly IFormatter _formatter;
         private readonly XmlSerializer _formatter;
         private bool _isRunning;
-        private BackgroundWorker _backgroundWorker;
+        private readonly BackgroundWorker _backgroundWorker;
+        private StreamReader _reader;
 
-        public ChatServer(string ipAdress, int port, BackgroundWorker backgroundWorker)
+        public SensorValuesServer(string ipAdress, int port, BackgroundWorker backgroundWorker)
         {
             //_formatter = new BinaryFormatter();
-            _formatter = new XmlSerializer(typeof(SensorValues));
+            _formatter = new XmlSerializer(typeof(SensorValues.SensorValues));
 
             IpAdress = ipAdress;
             Port = port;
@@ -57,7 +57,7 @@ namespace SensorValueVisualization.ViewModel
                 }
 
                 _connectedClient = _listener.AcceptTcpClient();
-                
+
                 try
                 {
                     ThreadPool.QueueUserWorkItem(ReadClientMessages, null);
@@ -81,6 +81,11 @@ namespace SensorValueVisualization.ViewModel
                 _connectedClient.Close();
             }
 
+            if (_reader != null)
+            {
+                _reader.Dispose();
+            }
+
             _listener.Stop();
         }
 
@@ -97,21 +102,25 @@ namespace SensorValueVisualization.ViewModel
                             //SensorValues sensorValues = (SensorValues)_formatter.Deserialize(stream);
 
                             StringBuilder receivedXml = new StringBuilder(String.Empty);
-                            using (StreamReader reader = new StreamReader(stream))
+                            _reader = new StreamReader(stream);
+
+                            string receivedLine;
+
+                            while ((receivedLine = _reader.ReadLine()) != null)
                             {
-                                string receivedLine;
+                                receivedXml.AppendLine(receivedLine);
 
-                                while ((receivedLine = reader.ReadLine()) != null)
+                                if (receivedLine == "</SensorValues>")
                                 {
-                                    receivedXml.AppendLine(receivedLine);
+                                    break;
                                 }
+                            }
 
-                                using (Stream xmlStream = GenerateStreamFromString(receivedXml.ToString()))
-                                {
-                                    SensorValues sensorValues = (SensorValues)_formatter.Deserialize(xmlStream);
-                                    Debug.WriteLine(sensorValues);
-                                    _backgroundWorker.ReportProgress(0, sensorValues);
-                                }
+                            using (Stream xmlStream = GenerateStreamFromString(receivedXml.ToString()))
+                            {
+                                SensorValues.SensorValues sensorValues = (SensorValues.SensorValues)_formatter.Deserialize(xmlStream);
+                                Debug.WriteLine(sensorValues);
+                                _backgroundWorker.ReportProgress(0, sensorValues);
                             }
                         }
                         catch (IOException)

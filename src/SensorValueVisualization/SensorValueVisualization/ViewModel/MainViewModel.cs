@@ -1,10 +1,8 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Windows;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using SensorValuesServer;
 
 namespace SensorValueVisualization.ViewModel
 {
@@ -22,18 +20,21 @@ namespace SensorValueVisualization.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
-        private ChatServer _chatServer;
+        private const double Gravity = 9.81;
+        private const double Multiplier = 360/(2*Gravity);
+
+        private SensorValuesServer _sensorValuesServer;
         private BackgroundWorker _chatServerWorker;
         public MainViewModel()
         {
-            IpAdress = "127.0.0.1";
+            IpAdress = "10.0.0.2";
             Port = 1234;
             IsConnected = false;
         }
 
         ~MainViewModel()
         {
-            _chatServer.Stop();
+            _sensorValuesServer.Stop();
             IsConnected = false;
         }
 
@@ -63,18 +64,23 @@ namespace SensorValueVisualization.ViewModel
         
         private void RunChatServer(object sender, DoWorkEventArgs e)
         {
-            _chatServer.Start();
+            _sensorValuesServer.Start();
+        }
+
+        private int ConvertFromAccelerometerToAngle(double val)
+        {
+            return Convert.ToInt32(Math.Round(val*Multiplier));
         }
 
         private void ReadSensorValues(object sender, ProgressChangedEventArgs e)
         {
-            SensorValues sensorValues = e.UserState as SensorValues;
+            SensorValues.SensorValues sensorValues = e.UserState as SensorValues.SensorValues;
 
             if (sensorValues != null)
             {
-                AccelerometerX = sensorValues.AccelerometerX;
-                AccelerometerY = sensorValues.AccelerometerY;
-                AccelerometerZ = sensorValues.AccelerometerZ;
+                AccelerometerX = ConvertFromAccelerometerToAngle(sensorValues.AccelerometerX);
+                AccelerometerY = ConvertFromAccelerometerToAngle(sensorValues.AccelerometerY);
+                AccelerometerZ = ConvertFromAccelerometerToAngle(sensorValues.AccelerometerZ);
             }
         }
 
@@ -125,7 +131,7 @@ namespace SensorValueVisualization.ViewModel
                 WorkerReportsProgress = true,
                 WorkerSupportsCancellation = true
             };
-            _chatServer = new ChatServer(IpAdress, Port, _chatServerWorker);
+            _sensorValuesServer = new SensorValuesServer(IpAdress, Port, _chatServerWorker);
             try
             {
                 _chatServerWorker.DoWork += RunChatServer;
@@ -153,7 +159,7 @@ namespace SensorValueVisualization.ViewModel
 
         private void OnClickStop()
         {
-            _chatServer.Stop();
+            _sensorValuesServer.Stop();
             IsConnected = false;
         }
 

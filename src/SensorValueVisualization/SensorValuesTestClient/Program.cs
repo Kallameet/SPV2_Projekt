@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
-using SensorValuesServer;
 
 namespace SensorValuesTestClient
 {
@@ -20,20 +15,20 @@ namespace SensorValuesTestClient
 
         private const int RandomValueMax = 360;
 
-        static void Main(string[] args)
+        static void Main()
         {
             _tcpClient = new TcpClient();
-            _formatter = new XmlSerializer(typeof(SensorValues));
+            _formatter = new XmlSerializer(typeof(SensorValues.SensorValues));
             _randomGenerator = new Random();
 
             while (true)
             {
-                SendSensorValues(new SensorValues { AccelerometerX = _randomGenerator.Next(0, RandomValueMax), AccelerometerY = _randomGenerator.Next(0, RandomValueMax), AccelerometerZ = _randomGenerator.Next(0, RandomValueMax) });
+                SendSensorValues(new SensorValues.SensorValues { AccelerometerX = _randomGenerator.Next(0, RandomValueMax), AccelerometerY = _randomGenerator.Next(0, RandomValueMax), AccelerometerZ = _randomGenerator.Next(0, RandomValueMax) });
                 Thread.Sleep(TimeSpan.FromSeconds(1));
             }
         }
 
-        private static void SendSensorValues(SensorValues message)
+        private static void SendSensorValues(SensorValues.SensorValues message)
         {
             IAsyncResult asyncResult = _tcpClient.BeginConnect(IPAddress.Parse("127.0.0.1"), 1234, null, null);
             if (!asyncResult.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(5), false))
