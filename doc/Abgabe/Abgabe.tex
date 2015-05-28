@@ -113,20 +113,34 @@ In der Android App können beliebige Sensorwerte ausgelesen werden. Die Klasse f
 \begin{figure}[!htb]%
 \centering
 \includegraphics[scale=0.5]{\screens/WPFApp.png}%
-\caption{WPF App}%
+\caption{WPF App mit C\# Testclient}%
 \label{}%
 \end{figure}
 
 
-% TODO Android
-%\begin{figure}[!htb]%
-%\centering
-%\includegraphics[scale=0.5]{\screens/WPFApp.png}%
-%\caption{WPF App}%
-%\label{}%
-%\end{figure}
 
-%\FloatBarrier
+\begin{figure}[!htb]%
+\centering
+\includegraphics[scale=0.5]{\screens/AndroidApp.png}%
+\caption{Android App}%
+\label{}%
+\end{figure}
+
+\begin{figure}[!htb]%
+\centering
+\includegraphics[scale=0.5]{\screens/Test1.png}%
+\caption{WPF App Test mit Android App (1)}%
+\label{}%
+\end{figure}
+
+\begin{figure}[!htb]%
+\centering
+\includegraphics[scale=0.5]{\screens/Test2.png}%
+\caption{WPF App Test mit Android App (2)}%
+\label{}%
+\end{figure}
+
+\FloatBarrier
 \newpage
 \section{Source Code}
 
@@ -141,7 +155,7 @@ Viewmodel:
 \lstinputlisting{\srcpath/SensorValueVisualization/SensorValueVisualization/ViewModel/MainViewModel.cs}
 
 Server:
-\lstinputlisting{\srcpath/SensorValueVisualization/SensorValueVisualization/ViewModel/ChatServer.cs}
+\lstinputlisting{\srcpath/SensorValueVisualization/SensorValueVisualization/ViewModel/SensorValuesServer.cs}
 
 C\# Testclient:
 \lstinputlisting{\srcpath/SensorValueVisualization/SensorValuesTestClient/Program.cs}
@@ -158,6 +172,9 @@ Android App:
 
 Android Oberfläche:
 \lstinputlisting[language=XML]{\srcpath/SensorValuesApp/app/src/main/res/layout/activity_sensor_values.xml}
+
+XML-Serializer:
+\lstinputlisting[language=Java]{\srcpath/SensorValuesApp/app/src/main/java/reinhard/sensorvaluesapp/XmlCreator.java}
 
 
 \end{document}
